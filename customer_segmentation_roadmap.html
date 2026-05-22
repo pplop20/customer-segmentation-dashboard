@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Customer Segmentation Dashboard — Project Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Lora:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0c0f0a;
+    --surface: #141710;
+    --surface2: #1c2118;
+    --accent: #b5f03d;
+    --accent2: #e8ff8c;
+    --accent-dim: #7aaa1f;
+    --text: #e8ead4;
+    --text-muted: #8a9178;
+    --text-dim: #5a6050;
+    --border: #2a3025;
+    --phase-colors: #b5f03d, #5de8c4, #f0a83d, #e85d8c, #8d5de8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 40px 60px;
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(181,240,61,0.08);
+    border: 1px solid rgba(181,240,61,0.2);
+    padding: 4px 12px;
+    display: inline-block;
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  h1 em {
+    font-style: italic;
+    font-family: 'Lora', serif;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 580px;
+    font-style: italic;
+    border-left: 2px solid var(--accent-dim);
+    padding-left: 16px;
+    margin-top: 10px;
+  }
+
+  /* ── OBJECTIVE CARD ── */
+  .objective {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    max-width: 960px;
+    margin: 0 auto 60px;
+    padding: 36px 44px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  @media (max-width: 640px) { .objective { grid-template-columns: 1fr; padding: 24px; } }
+
+  .obj-block h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .obj-block p { font-size: 0.95rem; color: var(--text-muted); }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    background: var(--surface2);
+  }
+
+  .pill.hi { border-color: var(--accent-dim); color: var(--accent2); background: rgba(181,240,61,0.06); }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 40px 100px;
+  }
+
+  @media (max-width: 640px) { main { padding: 0 20px 60px; } .hero { padding: 50px 20px 40px; } }
+
+  /* ── PHASE ── */
+  .phase {
+    position: relative;
+    margin-bottom: 52px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .phase:nth-child(1) { animation-delay: 0.05s; }
+  .phase:nth-child(2) { animation-delay: 0.1s; }
+  .phase:nth-child(3) { animation-delay: 0.15s; }
+  .phase:nth-child(4) { animation-delay: 0.2s; }
+  .phase:nth-child(5) { animation-delay: 0.25s; }
+  .phase:nth-child(6) { animation-delay: 0.3s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    padding: 2px 8px;
+    font-weight: 400;
+  }
+
+  .phase:nth-child(1) .phase-num { background: rgba(181,240,61,0.12); color: #b5f03d; border: 1px solid rgba(181,240,61,0.3); }
+  .phase:nth-child(2) .phase-num { background: rgba(93,232,196,0.12); color: #5de8c4; border: 1px solid rgba(93,232,196,0.3); }
+  .phase:nth-child(3) .phase-num { background: rgba(240,168,61,0.12); color: #f0a83d; border: 1px solid rgba(240,168,61,0.3); }
+  .phase:nth-child(4) .phase-num { background: rgba(232,93,140,0.12); color: #e85d8c; border: 1px solid rgba(232,93,140,0.3); }
+  .phase:nth-child(5) .phase-num { background: rgba(141,93,232,0.12); color: #a07de8; border: 1px solid rgba(141,93,232,0.3); }
+  .phase:nth-child(6) .phase-num { background: rgba(93,168,232,0.12); color: #5da8e8; border: 1px solid rgba(93,168,232,0.3); }
+
+  .phase-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  /* ── STEPS ── */
+  .steps { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .step:hover { border-color: var(--text-dim); }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .step-title::before {
+    content: '→';
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .step p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px; }
+
+  .step .why {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-style: italic;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
+
+  .step .why span { color: var(--accent-dim); font-style: normal; }
+
+  /* ── TOOL CHIPS ── */
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+  .tool-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    padding: 2px 9px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: rgba(181,240,61,0.05);
+    border: 1px solid rgba(181,240,61,0.18);
+    border-left: 3px solid var(--accent);
+    padding: 18px 24px;
+    margin: 28px 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .callout strong { color: var(--accent2); font-family: 'Syne', sans-serif; font-size: 0.85rem; display: block; margin-bottom: 4px; }
+
+  /* ── DELIVERABLE ── */
+  .deliverable-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+    margin-bottom: 60px;
+  }
+
+  .del-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    text-align: center;
+  }
+
+  .del-icon { font-size: 1.8rem; margin-bottom: 10px; }
+
+  .del-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .del-card p { font-size: 0.8rem; color: var(--text-muted); }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin: 52px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 28px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  footer span { color: var(--accent-dim); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Project Roadmap · ML Curriculum</div>
+  <h1>Customer<br/><em>Segmentation</em><br/>Dashboard</h1>
+  <p class="hero-sub">A guided walkthrough from raw data to predictive clustering — bridging unsupervised discovery with supervised automation.</p>
+</div>
+
+<!-- OBJECTIVE -->
+<div class="objective">
+  <div class="obj-block">
+    <h3>Overall Objective</h3>
+    <p>Segment e-commerce customers by purchase behavior using RFM analysis, then train a classifier to auto-label new customers — visualizing everything with PCA-reduced cluster plots.</p>
+  </div>
+  <div class="obj-block">
+    <h3>Expected Deliverables</h3>
+    <div class="pill-row">
+      <span class="pill hi">RFM Feature Matrix</span>
+      <span class="pill hi">K-Means Clusters</span>
+      <span class="pill hi">PCA Visualization</span>
+      <span class="pill hi">Trained Classifier</span>
+      <span class="pill">Evaluation Report</span>
+      <span class="pill">Jupyter Notebook</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <div class="section-label">Development Phases</div>
+
+  <!-- PHASE 0 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 00</span>
+      <h2 class="phase-title">Environment Setup & Data Acquisition</h2>
+    </div>
+    <ul class="steps">
+      <li class="step">
+        <div class="step-title">Install Python & create a virtual environment</div>
+        <p>Use Python 3.10+ and set up an isolated environment via <code>venv</code> or <code>conda</code>. This prevents dependency conflicts across projects.</p>
+        <div class="tools">
+          <span class="tool-chip">Python 3.10+</span>
+          <span class="tool-chip">venv / conda</span>
+          <span class="tool-chip">pip</span>
+        </div>
+        <p class="why"><span>Why:</span> Reproducibility. Any collaborator (or your future self) can recreate the exact environment.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Choose your development environment: Jupyter Notebook</div>
+        <p>Use JupyterLab or classic Jupyter Notebook. It lets you interleave code, plots, and markdown explanations — ideal for exploratory data work. Run <code>pip install jupyterlab</code>.</p>
+        <div class="tools">
+          <span class="tool-chip">JupyterLab</span>
+          <span class="tool-chip">VS Code + Jupyter ext.</span>
+        </div>
+        <p class="why"><span>Why:</span> Notebooks are the industry standard for iterative data exploration and communicating findings.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Install core libraries</div>
+        <p>Install everything you'll need upfront. Run: <code>pip install pandas numpy scikit-learn matplotlib seaborn plotly scipy</code>.</p>
+        <div class="tools">
+          <span class="tool-chip">pandas</span>
+          <span class="tool-chip">numpy</span>
+          <span class="tool-chip">scikit-learn</span>
+          <span class="tool-chip">matplotlib</span>
+          <span class="tool-chip">seaborn</span>
+          <span class="tool-chip">plotly</span>
+          <span class="tool-chip">scipy</span>
+        </div>
+        <p class="why"><span>Why:</span> These are the foundational open-source data science libraries; all free, all battle-tested.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Download the UCI Online Retail Dataset</div>
+        <p>Go to <strong>Kaggle.com</strong> and search for <em>"UCI Online Retail"</em>. The dataset is free and contains ~500k transactions with fields like CustomerID, InvoiceDate, Quantity, and UnitPrice.</p>
+        <div class="tools">
+          <span class="tool-chip">Kaggle (free account)</span>
+          <span class="tool-chip">UCI ML Repository</span>
+        </div>
+        <p class="why"><span>Why:</span> This dataset is well-known, clean enough to learn on, and perfectly structured for RFM analysis.</p>
+      </li>
+    </ul>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 01</span>
+      <h2 class="phase-title">Exploratory Data Analysis (EDA)</h2>
+    </div>
+    <ul class="steps">
+      <li class="step">
+        <div class="step-title">Load the data and inspect its structure</div>
+        <p>Use <code>pd.read_excel()</code> or <code>pd.read_csv()</code> to load the file. Call <code>.info()</code>, <code>.head()</code>, and <code>.describe()</code> to understand column types, ranges, and missing values.</p>
+        <p class="why"><span>Why:</span> You can't clean what you don't understand. This step anchors all downstream decisions.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Identify and handle data quality issues</div>
+        <p>Look for: missing CustomerIDs (rows to drop), negative quantities (returns/cancellations), duplicates, and zero unit prices. Log and document every decision you make.</p>
+        <p class="why"><span>Why:</span> Dirty data produces meaningless clusters. Your RFM scores must reflect real purchase behavior.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Visualize distributions of key variables</div>
+        <p>Plot histograms of Quantity, UnitPrice, and transaction counts per customer. Use <code>seaborn</code>'s <code>histplot</code> and <code>boxplot</code>. Note heavy skews — these will affect your feature engineering.</p>
+        <p class="why"><span>Why:</span> Visual patterns reveal outliers and skewness you must account for before clustering.</p>
+      </li>
+    </ul>
+
+    <div class="callout">
+      <strong>📌 Learning checkpoint</strong>
+      After EDA, you should be able to describe: what fraction of transactions have missing CustomerIDs, the typical order value range, and whether there are seasonal purchase spikes. Write these findings as markdown cells in your notebook.
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 02</span>
+      <h2 class="phase-title">RFM Feature Engineering</h2>
+    </div>
+    <ul class="steps">
+      <li class="step">
+        <div class="step-title">Define the RFM snapshot date</div>
+        <p>Choose a reference date — typically one day after the dataset's last transaction date. All recency calculations are relative to this date.</p>
+        <p class="why"><span>Why:</span> RFM is temporal; the snapshot date determines how "recent" each customer actually is.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Compute Recency (R)</div>
+        <p>For each CustomerID, find the date of their most recent purchase. Calculate the number of days between that date and the snapshot date. Lower = more recent.</p>
+        <p class="why"><span>Why:</span> Recency is often the strongest predictor of future purchases — recently active customers are warmer leads.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Compute Frequency (F)</div>
+        <p>Count the number of distinct invoices per customer (not the number of line items). Use <code>groupby('CustomerID')['InvoiceNo'].nunique()</code>.</p>
+        <p class="why"><span>Why:</span> Frequency captures loyalty — how often does a customer return to buy?</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Compute Monetary Value (M)</div>
+        <p>Create a <code>TotalSpend</code> column (<code>Quantity × UnitPrice</code>), then sum it per customer. This is total lifetime spend.</p>
+        <p class="why"><span>Why:</span> Monetary value identifies your highest-value customers — the ones who drive revenue.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Scale the RFM features</div>
+        <p>Apply <code>StandardScaler</code> or <code>RobustScaler</code> from scikit-learn. Consider log-transforming heavily skewed columns first. Store the scaler object — you'll need it later for the classifier.</p>
+        <div class="tools">
+          <span class="tool-chip">sklearn.preprocessing.StandardScaler</span>
+          <span class="tool-chip">sklearn.preprocessing.RobustScaler</span>
+          <span class="tool-chip">numpy.log1p</span>
+        </div>
+        <p class="why"><span>Why:</span> K-Means is distance-based; unscaled features with large ranges dominate cluster assignment unfairly.</p>
+      </li>
+    </ul>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 03</span>
+      <h2 class="phase-title">Unsupervised Clustering — K-Means & Hierarchical</h2>
+    </div>
+    <ul class="steps">
+      <li class="step">
+        <div class="step-title">Determine the optimal number of clusters (K)</div>
+        <p>Run the <strong>Elbow Method</strong>: plot inertia (within-cluster sum of squares) for K = 2 to 10. Also compute the <strong>Silhouette Score</strong> for each K. Look for the "elbow" inflection point and the highest silhouette value.</p>
+        <div class="tools">
+          <span class="tool-chip">sklearn.cluster.KMeans</span>
+          <span class="tool-chip">sklearn.metrics.silhouette_score</span>
+        </div>
+        <p class="why"><span>Why:</span> Choosing K arbitrarily produces meaningless clusters. This step gives you data-driven justification.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Fit K-Means with the chosen K</div>
+        <p>Train <code>KMeans(n_clusters=K, random_state=42)</code> on your scaled RFM dataframe. Assign cluster labels back to your customer dataframe as a new column.</p>
+        <p class="why"><span>Why:</span> K-Means is fast, interpretable, and the go-to algorithm for customer segmentation tasks.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Explore with Hierarchical Clustering (Dendrogram)</div>
+        <p>Use <code>scipy.cluster.hierarchy.linkage</code> and <code>dendrogram</code> on a sample (≤500 customers) to visualize the merging hierarchy. Compare the cut-point with your K-Means K choice.</p>
+        <div class="tools">
+          <span class="tool-chip">scipy.cluster.hierarchy</span>
+          <span class="tool-chip">sklearn.cluster.AgglomerativeClustering</span>
+        </div>
+        <p class="why"><span>Why:</span> Hierarchical clustering reveals nested structure and validates whether your chosen K is natural in the data.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Profile and label each cluster</div>
+        <p>Group by cluster label and compute the mean R, F, and M for each group. Give human-readable names to each segment — e.g., "Champions", "At-Risk", "Hibernating", "New Customers".</p>
+        <p class="why"><span>Why:</span> Business stakeholders need interpretable segments, not just cluster ID numbers.</p>
+      </li>
+    </ul>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 04</span>
+      <h2 class="phase-title">Dimensionality Reduction & Visualization</h2>
+    </div>
+    <ul class="steps">
+      <li class="step">
+        <div class="step-title">Apply PCA to reduce to 2 components</div>
+        <p>Use <code>sklearn.decomposition.PCA(n_components=2)</code> on your scaled RFM features. Transform the data and store the 2D coordinates alongside cluster labels.</p>
+        <div class="tools">
+          <span class="tool-chip">sklearn.decomposition.PCA</span>
+        </div>
+        <p class="why"><span>Why:</span> You can't directly plot 3D RFM space. PCA projects the data onto 2 axes that capture maximum variance, making clusters visually interpretable.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Plot the 2D cluster scatter chart</div>
+        <p>Use <code>seaborn.scatterplot</code> with <code>hue=cluster_label</code>, or use <code>plotly.express.scatter</code> for an interactive version. Color-code each segment and add a legend with segment names.</p>
+        <div class="tools">
+          <span class="tool-chip">seaborn</span>
+          <span class="tool-chip">plotly.express</span>
+          <span class="tool-chip">matplotlib</span>
+        </div>
+        <p class="why"><span>Why:</span> A clear cluster plot is your primary visual proof that the segmentation worked. It's the centerpiece of your dashboard.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Add supporting visualizations</div>
+        <p>Create bar charts of average R, F, M per cluster; a heatmap of cluster centroids (seaborn's <code>heatmap</code>); and a pie chart showing the % of customers per segment.</p>
+        <p class="why"><span>Why:</span> Multi-angle visuals tell the complete story — size, behavior profile, and separation of each segment.</p>
+      </li>
+    </ul>
+
+    <div class="callout">
+      <strong>📌 Conceptual bridge moment</strong>
+      At this point you have discovered segments from raw data with no labels — pure unsupervised learning. The next phase asks: "Can a machine learn to assign future customers to these same segments automatically?" That's the transition from unsupervised to supervised learning.
+    </div>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 05</span>
+      <h2 class="phase-title">Supervised Classifier — Automating Segment Assignment</h2>
+    </div>
+    <ul class="steps">
+      <li class="step">
+        <div class="step-title">Prepare the supervised learning dataset</div>
+        <p>Your input features are the scaled RFM values. Your target labels are the K-Means cluster IDs you assigned in Phase 3. Split into train/test sets using <code>train_test_split(..., test_size=0.2, random_state=42)</code>.</p>
+        <div class="tools">
+          <span class="tool-chip">sklearn.model_selection.train_test_split</span>
+        </div>
+        <p class="why"><span>Why:</span> The cluster labels from unsupervised learning now serve as "ground truth" for supervised training — the key conceptual bridge.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Train a K-Nearest Neighbors (KNN) classifier</div>
+        <p>Use <code>sklearn.neighbors.KNeighborsClassifier</code>. Start with K=5. Fit on training data. This is your first model — keep it simple.</p>
+        <div class="tools">
+          <span class="tool-chip">sklearn.neighbors.KNeighborsClassifier</span>
+        </div>
+        <p class="why"><span>Why:</span> KNN is intuitive ("assign to the nearest group") and reinforces the distance-based logic you used in K-Means clustering.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Also train a Logistic Regression classifier</div>
+        <p>Use <code>sklearn.linear_model.LogisticRegression(multi_class='ovr', max_iter=500)</code>. Compare its predictions against KNN.</p>
+        <div class="tools">
+          <span class="tool-chip">sklearn.linear_model.LogisticRegression</span>
+        </div>
+        <p class="why"><span>Why:</span> Comparing two models is good scientific practice; it also introduces you to the idea of model selection.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Evaluate both classifiers</div>
+        <p>Compute <code>accuracy_score</code>, a <code>classification_report</code> (precision, recall, F1 per segment), and plot a <strong>confusion matrix</strong> as a heatmap. Note which segments are hardest to classify correctly.</p>
+        <div class="tools">
+          <span class="tool-chip">sklearn.metrics.accuracy_score</span>
+          <span class="tool-chip">sklearn.metrics.classification_report</span>
+          <span class="tool-chip">sklearn.metrics.ConfusionMatrixDisplay</span>
+        </div>
+        <p class="why"><span>Why:</span> A model without evaluation is a black box. You need to know where it fails before trusting it in production.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Demonstrate prediction on a new (fictional) customer</div>
+        <p>Create a dict with made-up R, F, M values. Scale it using the <em>same scaler</em> from Phase 2. Pass it through your best classifier. Print the predicted segment name.</p>
+        <p class="why"><span>Why:</span> This is the "wow" moment — your pipeline can now automatically label any new customer in real time.</p>
+      </li>
+    </ul>
+  </div>
+
+  <!-- PHASE 6 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 06</span>
+      <h2 class="phase-title">Final Assembly & Reflection</h2>
+    </div>
+    <ul class="steps">
+      <li class="step">
+        <div class="step-title">Clean up and structure your notebook</div>
+        <p>Add clear markdown headers, section descriptions, and interpretation cells between each code block. Make your notebook readable as a standalone document — someone should understand what you did without running the code.</p>
+        <p class="why"><span>Why:</span> Communication is half the job. A well-documented notebook is also your portfolio artifact.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Write a conclusions section</div>
+        <p>Summarize: how many segments you found, what characterizes each one, which classifier performed better and why, and one business recommendation based on the segmentation.</p>
+        <p class="why"><span>Why:</span> Translating analytical findings into business language is the skill that makes data science valuable.</p>
+      </li>
+      <li class="step">
+        <div class="step-title">Reflect on what each technique contributed</div>
+        <p>Write 3–5 sentences answering: "What did K-Means give you that Logistic Regression couldn't, and vice versa?" This reflection cements the unsupervised→supervised conceptual bridge.</p>
+        <p class="why"><span>Why:</span> Metacognitive reflection is what turns completed projects into deep, lasting knowledge.</p>
+      </li>
+    </ul>
+  </div>
+
+  <!-- DELIVERABLES GRID -->
+  <div class="section-label">Final Deliverables</div>
+  <div class="deliverable-grid">
+    <div class="del-card">
+      <div class="del-icon">📊</div>
+      <h4>PCA Cluster Plot</h4>
+      <p>2D scatter showing K segments colored by label</p>
+    </div>
+    <div class="del-card">
+      <div class="del-icon">🗂️</div>
+      <h4>RFM Segment Table</h4>
+      <p>Named segments with average R, F, M profiles</p>
+    </div>
+    <div class="del-card">
+      <div class="del-icon">🤖</div>
+      <h4>Trained Classifier</h4>
+      <p>KNN or Logistic Regression ready to label new customers</p>
+    </div>
+    <div class="del-card">
+      <div class="del-icon">📓</div>
+      <h4>Jupyter Notebook</h4>
+      <p>Documented end-to-end pipeline with analysis</p>
+    </div>
+    <div class="del-card">
+      <div class="del-icon">📈</div>
+      <h4>Evaluation Report</h4>
+      <p>Confusion matrix, accuracy, and F1 scores</p>
+    </div>
+    <div class="del-card">
+      <div class="del-icon">💡</div>
+      <h4>Business Insights</h4>
+      <p>Actionable recommendations per segment</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>Customer Segmentation Dashboard</span>
+  <span>Open-source stack only · Python · scikit-learn · <span>pandas</span></span>
+</footer>
+
+</body>
+</html>
